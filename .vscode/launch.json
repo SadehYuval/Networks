@@ -16,11 +16,7 @@
             "name": "(gdb) Launch stomp client",
             "type": "cppdbg",
             "request": "launch",
-<<<<<<< HEAD
-            "program": "${workspaceFolder}/client/bin/StompWCIClient",
-=======
             "program": "/home/spl211/Networks/client/bin/StompWCIClient",
->>>>>>> 598adc154a6430a3d9c3cb34abeb5205a36b13fb
             "args": ["127.0.0.1","7777"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

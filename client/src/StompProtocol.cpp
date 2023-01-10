@@ -68,15 +68,34 @@ void StompProtocol::summaryProcess(Frame &frame){
                 map<string,string> g_e = temp.front();
                 temp.pop_front();
                 game_events.push_back(g_e);
-            }            
+            }           
+            //creat the file 
+            std::ofstream file(txtFile);
+            size_t position = game.find('_');
+            file << game.substr(0,position) + " vs " + game.substr(position +1) + '\n';
+            file << "Game stats:\n";
+            file << "General stats:\n";
+            for(const auto &update : general_game_updates){
+                file << update.first + ": " + update.second  + '\n';
+            }
+            file << game.substr(0,position) + " stats:\n";
+            for(const auto &update : team_a_updates){
+                file << update.first + ": " + update.second  + '\n';
+            }
+            file << game.substr(position + 1) + " stats:\n";
+            for(const auto &update : team_b_updates){
+                file << update.first + ": " + update.second  + '\n';
+            }
+            file <<  "Game event reports:\n";
+            for(const auto &map : game_events){
+                file << map.at("time") + " - " + map.at("event name") + "\n\n";
+                file << map.at("description") + "\n\n\n";
+            }
 
         }catch(const std::out_of_range& noReports){
             //user not reported on this game
             //return an empty file
             std::ofstream file(txtFile);
-
-            
-
             std::cout << "user not reported on this game" << std::endl;
         }
 
