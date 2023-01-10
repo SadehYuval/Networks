@@ -24,7 +24,6 @@ string Frame::toString(){
     }
     output = output + '\n';
     output = output + body;
-    output = output + '\0';
     return output;
 };
 

@@ -19,6 +19,7 @@ private:
     string userName;
     int subsId;
     map<pair<string,string>, list<Frame>> reportsMap;
+    
 
 
 
@@ -34,6 +35,7 @@ public:
     int getSubId(string &game);
     void setUserName(string &name);
     string getUserName();
-
+    void setLogoutReceipt(int i);
+    int logoutReceipt;
     ~StompProtocol();
 };

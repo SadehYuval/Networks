@@ -19,7 +19,7 @@ using std::pair;
 using std::map;
 
 
-StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false){};
+StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false),logoutReceipt(-1){};
 
 StompProtocol::~StompProtocol(){
     
@@ -58,16 +58,18 @@ void StompProtocol::summaryProcess(Frame &frame){
 };
 
 void StompProtocol::receiveProcess(Frame &frame){
-    //TODO
-    //ERROR -> should_terminate=true
     string commandLine = frame.getCommandLine();
-    if(commandLine.compare("ERROR") == 0){
-        should_terminate = true;
-    }
-    //CONNECTED
+     //CONNECTED
     if(commandLine.compare("CONNECTED") == 0){
     
     }
+    //
+    //ERROR -> should_terminate=true
+    
+    if(commandLine.compare("ERROR") == 0){
+        should_terminate = true;
+    }
+   
     //MESSAGE
     if(commandLine.compare("MESSAGE") == 0){
         string userName;
@@ -89,7 +91,9 @@ void StompProtocol::receiveProcess(Frame &frame){
     }
     //RECEIPT
     if(commandLine.compare("RECEIPT") == 0){
-        
+        string reseiptNum = frame.getHeaders().at("receipt-id");
+        if(reseiptNum.compare(std::to_string(logoutReceipt)) == 0) 
+            should_terminate = true;
     }
     
 };
@@ -105,7 +109,10 @@ void StompProtocol::removeSubscription(string game){
 };
 
 int StompProtocol::getSubId(string &game){
-    int subscriptionId = gamesToSubId.at(game);
+    int subscriptionId = -1;
+    try{
+        subscriptionId = gamesToSubId.at(game);
+    }catch(const std::out_of_range& oor){}
     return subscriptionId;
 };
 
@@ -116,6 +123,10 @@ void StompProtocol::setUserName(string &name){
 string StompProtocol::getUserName(){
     return userName;
 };
+
+void StompProtocol::setLogoutReceipt(int i){
+    logoutReceipt = i;
+}
 
 
 

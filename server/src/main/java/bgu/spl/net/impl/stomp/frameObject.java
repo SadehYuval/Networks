@@ -32,6 +32,9 @@ public class frameObject {
 
 
     static frameObject StringToframeObject(String str){
+        if(str == ""){
+            return null;
+        }
         String[] lines = str.split("\n");
         String command = lines[0];
         Map<String,String> map = new HashMap<String,String>();

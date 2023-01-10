@@ -9,23 +9,24 @@
 
 
 int main (int argc, char *argv[]) {
-	if (argc < 3) {
+    while(1){
+        if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
         return -1;
-    }
-    std::string host = argv[1];
-    short port = atoi(argv[2]);
+        }
+        std::string host = argv[1];
+        short port = atoi(argv[2]);
     
    
-    ConnectionHandler connectionHandler(host, port);
-    if (!connectionHandler.connect()) {
-        std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
-        return 1;
-    }
+        ConnectionHandler connectionHandler(host, port);
+        if (!connectionHandler.connect()) {
+            std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
+            return 1;
+        }
 
-    //Initialize objects to later start as threads
-	KeyboardInputManager readFromUser(connectionHandler);
-	ServerInputManager readFromServer(connectionHandler);
+        //Initialize objects to later start as threads
+	    KeyboardInputManager readFromUser(connectionHandler);
+	    ServerInputManager readFromServer(connectionHandler);
 
     //Perform login
     // while(!connect){
@@ -48,16 +49,18 @@ int main (int argc, char *argv[]) {
 
 	
 
-    while(!connectionHandler.protocol.should_terminate ){
+        //while(!connectionHandler.protocol.should_terminate ){
         //This order of lines should make both threads operate concurrently while the main thread is waiting for them both to finish
         std::thread thread_readFromKeyboard(&KeyboardInputManager::run, &readFromUser);
 		std::thread thread_readFromServer(&ServerInputManager::run, &readFromServer);
         thread_readFromKeyboard.join();
 		thread_readFromServer.join();
-    }
-    connectionHandler.close();
-    connectionHandler.~ConnectionHandler();
-    std::cout << "Socket has been closed and the connection was terminated" << std::endl;
+        //}
+        connectionHandler.close();
+        connectionHandler.~ConnectionHandler();
+        std::cout << "Socket has been closed and the connection was terminated" << std::endl;
 
-    return 0;
+        return 0;
+    }
+	
 }

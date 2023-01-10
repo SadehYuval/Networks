@@ -148,9 +148,10 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
             error(message, "malformed frame received - receipt");
         }
         else{
+            receipt(message);
             dataBase.disconnect(connectionId);
             connections.disconnect(connectionId);
-            receipt(message);
+            
         }
         shouldTerminate = true;
         System.out.println("succses to logout");
@@ -162,7 +163,7 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
         String receiptId = message.headers.get("receipt");
         if(receiptId != null)
             headers.put("receipt-id", receiptId);
-        String errorMessage ="The message:\n-----\n" + message.frameObjectToString() +"\n-----";
+        String errorMessage ="The message:" + "\n----\n" + message.frameObjectToString() +"\n-----";
         connections.send(connectionId, new frameObject("ERROR", headers,errorMessage));
         connections.disconnect(connectionId);
         dataBase.disconnect(connectionId);
@@ -174,7 +175,7 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
         String receipt = message.headers.get("receipt");
         if(receipt != null){
             Map<String,String> headers = new HashMap<String,String>();
-            headers.put("receipt", receipt);
+            headers.put("receipt-id", receipt);
             connections.send(connectionId, new frameObject("RECEIPT", headers, ""));
         }
     }

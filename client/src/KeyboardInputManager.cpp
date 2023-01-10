@@ -70,6 +70,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             string receipt_num = std::to_string(receiptNum);
             pair<string, string> header ("receipt",  receipt_num);
             headers.insert(header);
+            connectionHandler.protocol.setLogoutReceipt(receiptNum);
         }
     }
     //join - SUBSCRIBE
@@ -108,6 +109,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             string receipt_num = std::to_string(receiptNum);
             pair<string, string> receipt ("receipt",  receipt_num);
             headers.insert(receipt);
+            headers.insert(id);
         }
         
     }
@@ -145,6 +147,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     }
     //Invalid command
     else{
+        commandLine = "Invalid command line";
         pair<string, string> header ("error","");
         headers.insert(header);
     }
