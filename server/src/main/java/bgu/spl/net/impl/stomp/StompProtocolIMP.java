@@ -25,9 +25,10 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
     }
 
     @Override
-    public void process(frameObject msg) {
+    public void process(frameObject message) {
         //check if framObject is valide
-        frameObject message = ((frameObject)msg);
+        //frameObject message = ((frameObject)msg);
+        System.out.println("the massege that recived from clien\n" + message.frameObjectToString());
         String commandLine =  message.commandLine;
         if(commandLine.equals("CONNECT")){
             connect(message);
@@ -48,7 +49,7 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
         else{
             error(message,"invalid command");
         }
-        System.out.println("the massege that recived from clien\n" + msg.frameObjectToString());
+        
     }
 
     @Override

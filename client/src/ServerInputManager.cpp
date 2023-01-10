@@ -18,11 +18,11 @@ void ServerInputManager::run(){
     while(!connectionHandler.protocol.should_terminate){
         string serverInput = "";
         //Read from the socket and insert into serverInput
-        connectionHandler.getLine(serverInput);
+        connectionHandler.getFrameAscii(serverInput,'\0');
         //Send to protocol to manage the input
         Frame frame = toFrameRecieve(serverInput);
         connectionHandler.protocol.receiveProcess(frame);
-        std::cout << "frame recived from server\n" + frame.toString() << std::endl;
+        std::cout << "frame recived from server\n" + frame.toString()  + '\n' << std::endl;
     }
 };
 

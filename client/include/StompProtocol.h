@@ -38,5 +38,6 @@ public:
     string getUserName();
     void setLogoutReceipt(int i);
     int logoutReceipt;
+    bool connected;
     ~StompProtocol();
 };

@@ -19,7 +19,7 @@ using std::pair;
 using std::map;
 
 
-StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false),logoutReceipt(-1){};
+StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false),logoutReceipt(-1), connected(false){};
 
 StompProtocol::~StompProtocol(){
     
@@ -91,12 +91,13 @@ void StompProtocol::receiveProcess(Frame &frame){
     string commandLine = frame.getCommandLine();
      //CONNECTED
     if(commandLine.compare("CONNECTED") == 0){
-    
+        connected = true;
     }
     //
     //ERROR -> should_terminate=true
     
     if(commandLine.compare("ERROR") == 0){
+        connected = false;
         should_terminate = true;
     }
    
@@ -104,7 +105,10 @@ void StompProtocol::receiveProcess(Frame &frame){
     if(commandLine.compare("MESSAGE") == 0){
         string userName;
         std::stringstream ss (frame.getBody());
+        //TODO
+        //user name incurrect!!!"username: mani" for example and \n not detected
         std::getline(ss, userName, '\n');
+        std::cout << "user that send the mesage: "+ userName << std::endl;
         string game = frame.getHeaders().at("destination");
         pair<string,string> temp (game, userName);
         list<Frame>* updates;
@@ -122,8 +126,10 @@ void StompProtocol::receiveProcess(Frame &frame){
     //RECEIPT
     if(commandLine.compare("RECEIPT") == 0){
         string reseiptNum = frame.getHeaders().at("receipt-id");
-        if(reseiptNum.compare(std::to_string(logoutReceipt)) == 0) 
+        if(reseiptNum.compare(std::to_string(logoutReceipt)) == 0){
+            connected = false;
             should_terminate = true;
+        } 
     }
     
 };
