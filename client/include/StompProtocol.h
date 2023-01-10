@@ -19,6 +19,7 @@ private:
     string userName;
     int subsId;
     map<pair<string,string>, list<Frame>> reportsMap;
+    list<map<string,string>> pullFrameData(Frame &update);
     
 
 

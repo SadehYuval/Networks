@@ -1,4 +1,4 @@
-CFLAGS:=-c -Wall -Weffc++ -g -std=c++11 -Iinclude
+CFLAGS:=-c -Wall -Weffc++ -g -std=c++17 -Iinclude
 LDFLAGS:=-lboost_system -lpthread
 
 all: clean StompWCIClient

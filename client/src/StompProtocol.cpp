@@ -25,8 +25,9 @@ StompProtocol::~StompProtocol(){
     
 }
 
+
+
 void StompProtocol::summaryProcess(Frame &frame){
-    //TODO
     string userName = frame.getHeaders().at("user");
     string game = frame.getHeaders().at("game");
     string txtFile = frame.getHeaders().at("file");
@@ -38,14 +39,43 @@ void StompProtocol::summaryProcess(Frame &frame){
             map<string,string> general_game_updates;
             map<string,string> team_a_updates;
             map<string,string> team_b_updates;
-            map<string,string> game_event_before_half_time;
-            map<string,string> game_event_after_half_time;
-            //TODO
+            list<map<string,string>> game_events;
+            for(auto &frame : updates){
+                string body = frame.getBody();
+                list<map<string,string>> temp;
+                frame.pullFrameData(body, temp);
+                map<string,string> g_g_u = temp.front();
+                temp.pop_front();
+                for(const auto &update : g_g_u){
+                    string key = update.first;
+                    string value = update.second;
+                    general_game_updates.insert_or_assign(key, value);
+                }
+                map<string,string> t_a_u = temp.front();
+                temp.pop_front();
+                for(const auto &update : t_a_u){
+                    string key = update.first;
+                    string value = update.second;
+                    team_a_updates.insert_or_assign(key, value);
+                }
+                map<string,string> t_b_u = temp.front();
+                temp.pop_front();
+                for(const auto &update : t_b_u){
+                    string key = update.first;
+                    string value = update.second;
+                    team_b_updates.insert_or_assign(key, value);
+                }
+                map<string,string> g_e = temp.front();
+                temp.pop_front();
+                game_events.push_back(g_e);
+            }            
 
         }catch(const std::out_of_range& noReports){
             //user not reported on this game
             //return an empty file
             std::ofstream file(txtFile);
+
+            
 
             std::cout << "user not reported on this game" << std::endl;
         }
