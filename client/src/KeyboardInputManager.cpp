@@ -20,14 +20,18 @@ void KeyboardInputManager::run(){
         getline(std::cin, keyboardInput);
         //send to protocol to handle the input
         Frame frame = toFrameSend(keyboardInput);
-        if(frame.getCommandLine().compare("summary") == 0){
+        if(frame.getCommandLine().compare("SUMMARY") == 0){
             connectionHandler.protocol.summaryProcess(frame);
+        }
+        else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
+            std::cout << "alredy login logout befor trying to login" << std::endl;
         }
         else{
             string output = frame.toString();
-            connectionHandler.sendLine(output);
+            connectionHandler.sendFrameAscii(output, '\0');
+            std::cout << "frame send from client\n" + frame.toString() << std::endl;
         }
-        std::cout << "frame send from client\n" + frame.toString() << std::endl;
+        
     }
 };
 
@@ -44,6 +48,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
         commandLine = "CONNECT";
         //Decide what to do with illegal input - temporary solution:
         if(lines.size() != 4){
+            commandLine = "CONNECT INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -63,6 +68,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     else if(type.compare("logout") == 0){
         commandLine = "DISCONNECT";
         if(lines.size() != 1){
+            commandLine = "DISCONNECT INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -77,6 +83,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     else if(type.compare("join") == 0){
         commandLine = "SUBSCRIBE";
         if(lines.size() != 2){
+            commandLine = "SUBSCRIB INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -98,6 +105,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     else if(type.compare("exit") == 0){
         commandLine = "UNSUBSCRIBE";
         if(lines.size() != 2){
+            commandLine = "UNSUBSCRIB INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -117,6 +125,7 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     else if(type.compare("report") == 0){
         commandLine = "SEND";
         if(lines.size() != 2){
+            commandLine = "SEND INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -132,7 +141,9 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
     }
     //summary
     else if(type.compare("summary") == 0){
+        commandLine = "SUMMARY";
         if(lines.size() != 4){
+            commandLine = "SUMMARY INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
         }
@@ -171,7 +182,7 @@ string KeyboardInputManager::toStringFile(Event &event){
     body << "team a: " + event.get_team_a_name() + '\n' <<
     "team b: " + event.get_team_a_name() + '\n' <<
     "event name: " + event.get_name() + '\n' <<
-    "time: " + event.get_time() + '\n' <<
+    "time: " + std::to_string(event.get_time()) + '\n' <<
     general_game_updates <<
     team_a_updates <<
     team_b_updates <<

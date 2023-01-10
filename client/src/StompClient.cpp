@@ -28,25 +28,6 @@ int main (int argc, char *argv[]) {
 	    KeyboardInputManager readFromUser(connectionHandler);
 	    ServerInputManager readFromServer(connectionHandler);
 
-    //Perform login
-    // while(!connect){
-    //     string input ="";
-    //     getline(std::cin, input);
-    //     int index = input.find(" ");
-    //     if(input.substr(0,index).compare("login") == 0){
-
-    //         //connectionHandler.protosend(input);
-    //         //if(connectionHandler.getLine() == CONNECTED)
-    //             //disconnect = fasle
-                
-    //         //else
-    //             //Tend to the ERROR
-    //     }
-    //     else{
-    //         std::cout << "Please login before commiting any actions" << std::endl;
-    //     }
-    // }
-
 	
 
         //while(!connectionHandler.protocol.should_terminate ){
