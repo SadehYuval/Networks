@@ -19,23 +19,23 @@ void KeyboardInputManager::run(){
         //Read from keyboard and insert to keyboardInput
         getline(std::cin, keyboardInput);
         //send to protocol to handle the input
-        list<Frame> frameList;
-        toFrameSend(keyboardInput,frameList);
-        for(auto& frame: frameList){
-            if(frame.getCommandLine().compare("SUMMARY") == 0){
-                connectionHandler.protocol.summaryProcess(frame);
-            }
-            else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
-                std::cout << "alredy login logout befor trying to login" << std::endl;
-            }
-            else{
-                string output = frame.toString();
-                connectionHandler.sendFrameAscii(output, '\0');
-                std::cout << "frame send from client\n" + frame.toString() << std::endl;
+        if(!connectionHandler.protocol.should_terminate){
+            list<Frame> frameList;
+            toFrameSend(keyboardInput,frameList);
+            for(auto& frame: frameList){
+                if(frame.getCommandLine().compare("SUMMARY") == 0){
+                    connectionHandler.protocol.summaryProcess(frame);
+                }
+                else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
+                    std::cout << "alredy login logout befor trying to login" << std::endl;
+                }
+                else{
+                    string output = frame.toString();
+                    connectionHandler.sendFrameAscii(output, '\0');
+                    std::cout << "frame send from client\n" + frame.toString() << std::endl;
+                }
             }
         }
-        
-        
     }
 };
 
