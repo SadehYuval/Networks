@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <boost/algorithm/string/trim.hpp>
 
 using std::vector;
 using std::string;
@@ -124,9 +125,10 @@ void StompProtocol::receiveProcess(Frame &frame){
     if(commandLine.compare("MESSAGE") == 0){
         string userName;
         std::stringstream ss (frame.getBody());
-        //TODO
-        //user name incurrect!!!"username: mani" for example and \n not detected
         std::getline(ss, userName, '\n');
+        std::size_t position = userName.find(':');
+        userName = userName.substr(position +1);
+        boost::trim(userName);
         std::cout << "user that send the mesage: "+ userName << std::endl;
         string game = frame.getHeaders().at("destination");
         pair<string,string> temp (game, userName);

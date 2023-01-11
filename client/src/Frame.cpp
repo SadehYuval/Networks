@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include <list>
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 using std::string;
 using std::map;

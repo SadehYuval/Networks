@@ -61,7 +61,7 @@ public class frameObject {
                 map.put(key, value);
             }
             else{
-                message += line;
+                message = message + line + '\n';
             }
         }
         return new frameObject(command,map,message);

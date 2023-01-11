@@ -45,7 +45,7 @@ Frame ServerInputManager::toFrameRecieve(string &convert){
             headers.insert(tempPair);
         }
         else{
-            body += line;
+            body = body + line + '\n';
         }
     }
     return Frame(commandLine, headers, body);

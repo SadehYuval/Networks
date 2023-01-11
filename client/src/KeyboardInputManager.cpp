@@ -180,7 +180,7 @@ string KeyboardInputManager::toStringFile(Event &event){
         team_b_updates += "   " + update.first + ": " + update.second + '\n';
     }
     body << "team a: " + event.get_team_a_name() + '\n' <<
-    "team b: " + event.get_team_a_name() + '\n' <<
+    "team b: " + event.get_team_b_name() + '\n' <<
     "event name: " + event.get_name() + '\n' <<
     "time: " + std::to_string(event.get_time()) + '\n' <<
     general_game_updates <<
