@@ -11,6 +11,9 @@
 #include <vector>
 #include <fstream>
 #include <boost/algorithm/string/trim.hpp>
+#include <iostream>
+#include <fstream>
+
 
 using std::vector;
 using std::string;
@@ -18,6 +21,7 @@ using std::stringstream;
 using std::unordered_map;
 using std::pair;
 using std::map;
+using namespace std;
 
 
 StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false),logoutReceipt(-1), connected(false){};
@@ -29,9 +33,10 @@ StompProtocol::~StompProtocol(){
 
 
 void StompProtocol::summaryProcess(Frame &frame){
-    string userName = frame.getHeaders().at("user");
     string game = frame.getHeaders().at("game");
+    string userName = frame.getHeaders().at("user");
     string txtFile = frame.getHeaders().at("file");
+    std::cout << "game: " + game + " user: " + userName + '\n'<< std::endl;
     try{
         gamesToSubId.at(game);
         try{
@@ -92,6 +97,7 @@ void StompProtocol::summaryProcess(Frame &frame){
                 file << map.at("time") + " - " + map.at("event name") + "\n\n";
                 file << map.at("description") + "\n\n\n";
             }
+            file.close();
 
         }catch(const std::out_of_range& noReports){
             //user not reported on this game
@@ -131,6 +137,8 @@ void StompProtocol::receiveProcess(Frame &frame){
         boost::trim(userName);
         std::cout << "user that send the mesage: "+ userName << std::endl;
         string game = frame.getHeaders().at("destination");
+        game = game.substr(1);
+        std::cout << "game: " + game + " user: " + userName + '\n' << std::endl;
         pair<string,string> temp (game, userName);
         list<Frame>* updates;
         try{

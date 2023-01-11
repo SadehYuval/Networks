@@ -19,23 +19,27 @@ void KeyboardInputManager::run(){
         //Read from keyboard and insert to keyboardInput
         getline(std::cin, keyboardInput);
         //send to protocol to handle the input
-        Frame frame = toFrameSend(keyboardInput);
-        if(frame.getCommandLine().compare("SUMMARY") == 0){
-            connectionHandler.protocol.summaryProcess(frame);
+        list<Frame> frameList;
+        toFrameSend(keyboardInput,frameList);
+        for(auto& frame: frameList){
+            if(frame.getCommandLine().compare("SUMMARY") == 0){
+                connectionHandler.protocol.summaryProcess(frame);
+            }
+            else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
+                std::cout << "alredy login logout befor trying to login" << std::endl;
+            }
+            else{
+                string output = frame.toString();
+                connectionHandler.sendFrameAscii(output, '\0');
+                std::cout << "frame send from client\n" + frame.toString() << std::endl;
+            }
         }
-        else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
-            std::cout << "alredy login logout befor trying to login" << std::endl;
-        }
-        else{
-            string output = frame.toString();
-            connectionHandler.sendFrameAscii(output, '\0');
-            std::cout << "frame send from client\n" + frame.toString() << std::endl;
-        }
+        
         
     }
 };
 
-Frame KeyboardInputManager::toFrameSend(string &convert){
+void KeyboardInputManager::toFrameSend(string &convert, list<Frame> & frameList){
     receiptNum++;
     string commandLine = "";
     map<string, string> headers;
@@ -63,6 +67,8 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             headers.insert(login);
             headers.insert(passcode);
         }
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
     //logout - DISCONNECT
     else if(type.compare("logout") == 0){
@@ -78,6 +84,8 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             headers.insert(header);
             connectionHandler.protocol.setLogoutReceipt(receiptNum);
         }
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
     //join - SUBSCRIBE
     else if(type.compare("join") == 0){
@@ -99,7 +107,8 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             headers.insert(id);
             headers.insert(receipt);
         }
-
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
     //exit - UNSUBSCRIBE
     else if(type.compare("exit") == 0){
@@ -119,8 +128,11 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             headers.insert(receipt);
             headers.insert(id);
         }
-        
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
+
+
     //report - SEND
     else if(type.compare("report") == 0){
         commandLine = "SEND";
@@ -128,17 +140,24 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             commandLine = "SEND INVALID";
             pair<string, string> header ("error","");
             headers.insert(header);
+            Frame frame = Frame(commandLine, headers, body);
+            frameList.push_back(frame);
         }
         else{
             names_and_events toReport = parseEventsFile(lines[1]);
             string game = "/" + toReport.team_a_name + "_" + toReport.team_b_name;
             pair<string, string> gameName ("destination", game);
             headers.insert(gameName);
-            body = body + "user: " + connectionHandler.protocol.getUserName() + "\n";
-            Event event = toReport.events.back();
-            body = body + toStringFile(event); 
-        }
+            for(auto& event:toReport.events){
+                body =  "user: " + connectionHandler.protocol.getUserName() + "\n";
+                body = body + toStringFile(event);
+                Frame frame = Frame(commandLine, headers, body);
+                frameList.push_back(frame);
+            }
+        }   
     }
+
+
     //summary
     else if(type.compare("summary") == 0){
         commandLine = "SUMMARY";
@@ -155,14 +174,18 @@ Frame KeyboardInputManager::toFrameSend(string &convert){
             headers.insert(user);
             headers.insert(file);
         }
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
     //Invalid command
     else{
         commandLine = "Invalid command line";
         pair<string, string> header ("error","");
         headers.insert(header);
+        Frame frame = Frame(commandLine, headers, body);
+        frameList.push_back(frame);
     }
-    return Frame(commandLine, headers, body);
+    
 };
 
 string KeyboardInputManager::toStringFile(Event &event){
@@ -186,7 +209,7 @@ string KeyboardInputManager::toStringFile(Event &event){
     general_game_updates <<
     team_a_updates <<
     team_b_updates <<
-    "description: \n" + event.get_discription();
+    "description:\n" + event.get_discription();
 
     return body.str();
     

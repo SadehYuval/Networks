@@ -115,7 +115,7 @@ void Frame::pullFrameData(string &body, list<map<string,string>> &output){
     index++;
     string desc = lines[index];
     boost::trim(desc);
-    pair<string,string> description ("desctiprion",desc);
+    pair<string,string> description ("description",desc);
     game_events.insert(description);
     output.push_back(general_game_updates);
     output.push_back(team_a_updates);
