@@ -13,6 +13,8 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <iostream>
 #include <fstream>
+#include <mutex>
+
 
 
 using std::vector;
@@ -22,17 +24,15 @@ using std::unordered_map;
 using std::pair;
 using std::map;
 using namespace std;
+std::mutex mtx;
 
 
 StompProtocol::StompProtocol(): gamesToSubId(), userName(""), subsId(0), reportsMap(),should_terminate(false),logoutReceipt(-1), connected(false){};
 
-StompProtocol::~StompProtocol(){
-    
-}
-
 
 
 void StompProtocol::summaryProcess(Frame &frame){
+    mtx.lock();
     string game = frame.getHeaders().at("game");
     string userName = frame.getHeaders().at("user");
     string txtFile = frame.getHeaders().at("file");
@@ -111,6 +111,7 @@ void StompProtocol::summaryProcess(Frame &frame){
         should_terminate = true;
         std::cout << "user not subscribed to this game" << std::endl;
     }
+    mtx.unlock();
 };
 
 void StompProtocol::receiveProcess(Frame &frame){
@@ -141,6 +142,7 @@ void StompProtocol::receiveProcess(Frame &frame){
         std::cout << "game: " + game + " user: " + userName + '\n' << std::endl;
         pair<string,string> temp (game, userName);
         list<Frame>* updates;
+        mtx.lock();
         try{
             updates = &reportsMap.at(temp);
             updates->push_back(frame);
@@ -151,6 +153,7 @@ void StompProtocol::receiveProcess(Frame &frame){
             pair<pair<string,string>,list<Frame>> insert (temp, newUpdates);
             reportsMap.insert(insert);   
         }
+        mtx.unlock();
     }
     //RECEIPT
     if(commandLine.compare("RECEIPT") == 0){

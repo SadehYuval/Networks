@@ -7,10 +7,12 @@
 #include <boost/lexical_cast.hpp>
 #include <vector>
 
+
 using std::string;
 using std::pair;
 using std::map;
 using std::vector;
+
 //Termination condition
 
 vector<string> split(string &input,char delimiter){

@@ -11,7 +11,7 @@ using std::vector;
 using std::list;
 using std::map;
 
-// TODO: implement the STOMP protocol
+
 class StompProtocol
 {
 private:
@@ -39,5 +39,5 @@ public:
     void setLogoutReceipt(int i);
     int logoutReceipt;
     bool connected;
-    ~StompProtocol();
+
 };
