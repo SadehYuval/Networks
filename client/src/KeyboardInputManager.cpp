@@ -32,7 +32,7 @@ void KeyboardInputManager::run(){
                 else{
                     string output = frame.toString();
                     connectionHandler.sendFrameAscii(output, '\0');
-                    std::cout << "frame send from client\n" + frame.toString() << std::endl;
+                    std::cout << "FRAME SEND FROM CLIENT\n" + frame.toString() << std::endl;
                 }
             }
         }
