@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "bgu.spl.net.impl.stomp.StompServer",
             "projectName": "server",
-            "preLaunchTask": "mvn compile"
+            "preLaunchTask": "mvn compile",
         },
         {
             "name": "(gdb) Launch stomp client",

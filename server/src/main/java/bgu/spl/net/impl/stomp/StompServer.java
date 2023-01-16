@@ -5,21 +5,21 @@ public class StompServer {
 
     public static void main(String[] args) {
 
-       args = new String[]{"t","TPC","r"};
 
-        
+        Integer port = Integer.parseInt(args[0]);
+        String host = args[1];
 
-        if(args[1] == "TPC"){
+        if(host.equals("tpc")){
             Server.threadPerClient(
-                7777, //port
+                port, //port
                 () -> new StompProtocolIMP(), //protocol factory
                 StompMessageEncoderDecoder::new //message encoder decoder factory
             ).serve();
         }
-        else if(args[1] == "REACTOR"){
+        else if(host.equals("reactor")){
             Server.reactor(
                  Runtime.getRuntime().availableProcessors(),
-                 7777, //port
+                 port, //port
                  () ->  new StompProtocolIMP(), //protocol factory
                  StompMessageEncoderDecoder::new //message encoder decoder factory
          ).serve();

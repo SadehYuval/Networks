@@ -22,7 +22,7 @@ void ServerInputManager::run(){
         //Send to protocol to manage the input
         Frame frame = toFrameRecieve(serverInput);
         connectionHandler.protocol.receiveProcess(frame);
-        std::cout << "frame recived from server\n" + frame.toString()  + '\n' << std::endl;
+        
     }
 };
 

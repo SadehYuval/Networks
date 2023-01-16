@@ -6,7 +6,6 @@ bgu/spl/net/api/MessagingProtocol.class
 bgu/spl/net/srv/BlockingConnectionHandler.class
 bgu/spl/net/srv/ConnectionHandler.class
 bgu/spl/net/srv/BaseServer.class
-bgu/spl/net/impl/stomp/StompServer.class
 bgu/spl/net/api/StompMessagingProtocol.class
 bgu/spl/net/srv/Server.class
 bgu/spl/net/srv/ActorThreadPool.class

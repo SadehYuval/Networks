@@ -36,7 +36,6 @@ void StompProtocol::summaryProcess(Frame &frame){
     string game = frame.getHeaders().at("game");
     string userName = frame.getHeaders().at("user");
     string txtFile = frame.getHeaders().at("file");
-    std::cout << "game: " + game + " user: " + userName + '\n'<< std::endl;
     try{
         gamesToSubId.at(game);
         try{
@@ -108,7 +107,6 @@ void StompProtocol::summaryProcess(Frame &frame){
 
     }catch(const std::out_of_range& unSubscribed){
         //user not subscribed to this game
-        should_terminate = true;
         std::cout << "user not subscribed to this game" << std::endl;
     }
     mtx.unlock();
@@ -136,10 +134,8 @@ void StompProtocol::receiveProcess(Frame &frame){
         std::size_t position = userName.find(':');
         userName = userName.substr(position +1);
         boost::trim(userName);
-        std::cout << "user that send the mesage: "+ userName << std::endl;
         string game = frame.getHeaders().at("destination");
         game = game.substr(1);
-        std::cout << "game: " + game + " user: " + userName + '\n' << std::endl;
         pair<string,string> temp (game, userName);
         list<Frame>* updates;
         mtx.lock();

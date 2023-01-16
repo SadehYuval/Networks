@@ -78,11 +78,10 @@ public class StompProtocolIMP implements StompMessagingProtocol<frameObject>{
             frameObject connected = new frameObject("CONNECTED", headers, "");
             connections.send(connectionId, connected);
             receipt(message);
-            System.out.println("succses");
+           
         }
         else{
             error(message,"passcode invalid or user alredy active");
-            System.out.println("passcode invalid or user alredy active");
         } 
          
     }

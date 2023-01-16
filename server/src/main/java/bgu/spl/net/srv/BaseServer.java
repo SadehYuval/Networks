@@ -55,14 +55,6 @@ public abstract class BaseServer<T> implements Server<T> {
                         connectionId,
                         dataBase);
                 connectionId ++;        
-                //handler.getProtocol().start(connectionId, connections);
-                
-                /*
-                 * connections.CH.add((ConnectionHandler<frameObject>) this);
-            connections.connectionIdConnectionHandler.put(connectionId, (ConnectionHandler<frameObject>) this);
-                 */
-                //handler.start(connections);
-                //((StompMessagingProtocol<frameObject>)handler.getProtocol()).start(1, connections);
                 execute(handler);
             }
         } catch (IOException ex) {

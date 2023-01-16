@@ -69,22 +69,22 @@ int main () {
                 return 1;
             }
             connectionHandler.protocol.setUserName(arguments[2]);
-            KeyboardInputManager readFromUser(connectionHandler);
+            KeyboardInputManager readFromKeyboard(connectionHandler);
 	        ServerInputManager readFromServer(connectionHandler);
 
             string login = loginFrame.toString();
             connectionHandler.sendFrameAscii(login, '\0');
-            std::cout << "FRAME SEND FROM CLIENT\n" + loginFrame.toString()  + '\n' << std::endl;
             //waiting for response from the server
             string serverInput = "";
             connectionHandler.getFrameAscii(serverInput,'\0');
             Frame serverFrame = readFromServer.toFrameRecieve(serverInput);
             connectionHandler.protocol.receiveProcess(serverFrame);
-            std::cout << "FRAME SEND FROM SERVER\n" + serverFrame.toString()  + '\n' << std::endl;
-
-            std::thread thread_readFromKeyboard(&KeyboardInputManager::run, &readFromUser);
+            
+            
+            //std::thread thread_readFromKeyboard(&KeyboardInputManager::run, &readFromKeyboard);
 		    std::thread thread_readFromServer(&ServerInputManager::run, &readFromServer);
-            thread_readFromKeyboard.join();
+            readFromKeyboard.run();
+            //thread_readFromKeyboard.join();
 		    thread_readFromServer.join();
 
             connectionHandler.close();

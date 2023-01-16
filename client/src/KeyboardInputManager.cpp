@@ -27,12 +27,11 @@ void KeyboardInputManager::run(){
                     connectionHandler.protocol.summaryProcess(frame);
                 }
                 else if(frame.getCommandLine().compare("CONNECT") == 0 &&  connectionHandler.protocol.connected){
-                    std::cout << "alredy login logout befor trying to login" << std::endl;
+                    std::cout << "already logged in, logout before trying to login" << std::endl;
                 }
                 else{
                     string output = frame.toString();
                     connectionHandler.sendFrameAscii(output, '\0');
-                    std::cout << "FRAME SEND FROM CLIENT\n" + frame.toString() << std::endl;
                 }
             }
         }
